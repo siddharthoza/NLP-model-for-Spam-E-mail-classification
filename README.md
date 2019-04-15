@@ -5,7 +5,7 @@
 [![Build Status][build-shield]]()
 [![Contributors][contributors-shield]]()
 [![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][ http://www.linkedin.com/in/siddharthoza]
+[![LinkedIn][linkedin-shield]][linkedin-url]
 
 
 
