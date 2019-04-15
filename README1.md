@@ -1,30 +1,4 @@
-
-
-
-<!-- PROJECT SHIELDS -->
-[![Build Status][build-shield]]()
-[![Contributors][contributors-shield]]()
-[![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][ http://www.linkedin.com/in/siddharthoza]
-
-
-
-<!-- PROJECT LOGO -->
-<br />
-<p align="center">
-
-  <p align="center">
-    <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
-    ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Request Feature</a>
-  </p>
-</p>
-
-
-
-# Sign Language Interpreter using Deep Learning
+# NLP-model-for-Spam-E-mail-classification
 > A sign language interpreter using live video feed from the camera. 
 The project was completed in 24 hours as part of HackUNT-19, the University of North Texas's annual Hackathon. You can view the project demo on [YouTube](http://bit.ly/2Iaz2UK).
 
@@ -194,16 +168,3 @@ just want to shoot a question, please feel free to connect with me on <a href="h
 <a href="http://bit.ly/2uOIUeo" target="_blank">LinkedIn</a>, or 
 <a href="http://bit.ly/2CZv1i5" target="_blank">Twitter</a>. 
 My other projects can be found [here](http://bit.ly/2UlyFgC).
-
-
-
-
-
-<!-- MARKDOWN LINKS & IMAGES -->
-[build-shield]: https://img.shields.io/badge/build-passing-brightgreen.svg?style=flat-square
-[contributors-shield]: https://img.shields.io/badge/contributors-1-orange.svg?style=flat-square
-[license-shield]: https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square
-[license-url]: https://choosealicense.com/licenses/mit
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
-[linkedin-url]:  http://www.linkedin.com/in/siddharthoza
-[product-screenshot]: https://raw.githubusercontent.com/othneildrew/Best-README-Template/master/screenshot.png
