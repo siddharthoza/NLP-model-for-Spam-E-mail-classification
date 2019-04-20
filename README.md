@@ -27,7 +27,7 @@ Steps involved:
 
 ## Setup
 
-The dataset used and its metadata can be found [here](https://github.com/siddharthoza/NLP-model-for-Spam-E-mail-classification/Data). The jupyter notebook can be downloaded [here](https://github.com/harshbg/Cardiac-Arrhythmia-Multi-Class-Classification/blob/master/Cardiac%20Arrhythmia%20Multi-Class%20Classification.ipynb) and can be used to reproduce the result. 
+The dataset used and its metadata can be found [here](https://github.com/siddharthoza/NLP-model-for-Spam-E-mail-classification/tree/master/Data). The python file can be downloaded [here](https://github.com/siddharthoza/NLP-model-for-Spam-E-mail-classification/blob/master/app.py) and can be used to reproduce the result. 
 
 
 ## Process
