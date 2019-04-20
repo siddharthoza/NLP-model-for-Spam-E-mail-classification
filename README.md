@@ -79,8 +79,8 @@ def predict():
 * The model classifier classifies the input message in spam or non-spam with an accuracy of 93% 
 
 The end product looks like this: 
-![Example screenshot](./capture1.png)
-![Example screenshot](./capture2.png)
+![Example screenshot](./Capture1.png)
+![Example screenshot](./Capture2.png)
 
 
 ## Status
