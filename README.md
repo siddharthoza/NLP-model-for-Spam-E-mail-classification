@@ -16,7 +16,7 @@
 The workflow of the model looks like this: Train offline -> Make model available as a service -> Predict online. 
 Steps involved:
 1. A classifier is trained offline with spam and non-spam messages.
-2. The trained model and deployed it as a web service to serve users.
+2. The trained model is then deployed as a web service to serve users.
 
 ## Application Flow Diagram
 ![Example screenshot](./Image.jpg)
