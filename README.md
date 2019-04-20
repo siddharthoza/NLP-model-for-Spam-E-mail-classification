@@ -1,20 +1,10 @@
-
-<!-- PROJECT SHIELDS -->
-[![Build Status][build-shield]]()
-[![Contributors][contributors-shield]]()
-[![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
-
-
-# Sign Language Interpreter using Deep Learning
-> A sign language interpreter using live video feed from the camera. 
-The project was completed in 24 hours as part of HackUNT-19, the University of North Texas's annual Hackathon. You can view the project demo on [YouTube](http://bit.ly/2Iaz2UK).
+# NLP Model in Python & Deployed in Flask
+> The aim of this project to build a machine learning model which can predict if a message/email is spam or not using NLP. 
 
 ## Table of contents
 * [General info](#general-info)
-* [Screenshots](#screenshots)
-* [Demo](#demo)
-* [Technologies and Tools](#technologies-and-tools)
+* [Application Flow Diagram](#Application Flow Diagram)
+* [Technologies](#technologies)
 * [Setup](#setup)
 * [Process](#process)
 * [Code Examples](#code-examples)
@@ -23,169 +13,85 @@ The project was completed in 24 hours as part of HackUNT-19, the University of N
 * [Contact](#contact)
 
 ## General info
+The workflow of the model looks like this: Train offline -> Make model available as a service -> Predict online. 
+Steps involved:
+1. A classifier is trained offline with spam and non-spam messages.
+2. The trained model and deployed it as a web service to serve users.
 
-The theme at HACK UNT 19 was to use technology to improve accessibility by finding a creative solution to benefit the lives of those with a disability. 
-We wanted to make it easy for 70 million deaf people across the world to be independent of translators for there daily communication needs, so we designed the app to work as a personal translator 24*7 for the deaf people.
+## Application Flow Diagram
+![Example screenshot](./Image.jpg)
 
-## Demo
-![Example screenshot](./img/demo4.gif)
-
-
-
-![Example screenshot](./img/demo2.gif)
-
-
-
-![Example screenshot](./img/demo3.gif)
-
-
-**The entire demo of the project can be found on [YouTube](http://bit.ly/2Iaz2UK).**
-
-
-## Screenshots
-
-![Example screenshot](./img/Capture1.PNG)
-![Example screenshot](./img/Capture.PNG)
-
-## Technologies and Tools
-* Python 
-* TensorFlow
-* Keras
-* OpenCV
+## Technologies
+* Python - version 3.5
+* sklearn
 
 ## Setup
 
-* Use comand promt to setup environment by using install_packages.txt and install_packages_gpu.txt files. 
- 
-`pyton -m pip r install_packages.txt`
+The dataset used and its metadata can be found [here](https://github.com/siddharthoza/NLP-model-for-Spam-E-mail-classification/Data). The jupyter notebook can be downloaded [here](https://github.com/harshbg/Cardiac-Arrhythmia-Multi-Class-Classification/blob/master/Cardiac%20Arrhythmia%20Multi-Class%20Classification.ipynb) and can be used to reproduce the result. 
 
-This will help you in installing all the libraries required for the project.
 
 ## Process
 
-* Run `set_hand_histogram.py` to set the hand histogram for creating gestures. 
-* Once you get a good histogram, save it in the code folder, or you can use the histogram created by us that can be found [here](https://github.com/harshbg/Sign-Language-Interpreter-using-Deep-Learning/blob/master/Code/hist).
-* Added gestures and label them using OpenCV which uses webcam feed. by running `create_gestures.py` and stores them in a database. Alternately, you can use the gestures created by us [here](https://github.com/harshbg/Sign-Language-Interpreter-using-Deep-Learning/tree/master/Code).
-* Add different variations to the captured gestures by flipping all the images by using `Rotate_images.py`.
-* Run `load_images.py` to split all the captured gestures into training, validation and test set. 
-* To view all the gestures, run `display_gestures.py` .
-* Train the model using Keras by running `cnn_model_train.py`.
-* Run `final.py`. This will open up the gesture recognition window which will use your webcam to interpret the trained American Sign Language gestures.  
+* I will be using the SMS Spam Collection Dataset which tags 5,574 text messages based on whether they are “spam” or “ham” (not spam).
+* Build a classification model using Naive Bayes Classifier to classify which texts are spam.
+* I used Naive Bayes Classifier because they are popular statistical technique for e-mail filtering.
+* Turned the spam message classifier model into a web application using FLASK
+
 
 ## Code Examples
 
 ````
-# Model Traiining using CNN
+def predict():
+	df= pd.read_csv("spam.csv", encoding="latin-1")
+	df.drop(['Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4'], axis=1, inplace=True)
+	# Features and Labels
+	df['label'] = df['v1'].map({'ham': 0, 'spam': 1})
+	df['message']=df['v2']
+	df.drop(['v1','v2'],axis=1,inplace=True)
+	X = df['message']
+	y = df['label']
+	
+	# Extract Feature With CountVectorizer
+	cv = CountVectorizer()
+	X = cv.fit_transform(X) # Fit the Data
+	from sklearn.model_selection import train_test_split
+	X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42)
+	#Naive Bayes Classifier
+	from sklearn.naive_bayes import MultinomialNB
 
-import numpy as np
-import pickle
-import cv2, os
-from glob import glob
-from keras import optimizers
-from keras.models import Sequential
-from keras.layers import Dense
-from keras.layers import Dropout
-from keras.layers import Flatten
-from keras.layers.convolutional import Conv2D
-from keras.layers.convolutional import MaxPooling2D
-from keras.utils import np_utils
-from keras.callbacks import ModelCheckpoint
-from keras import backend as K
-K.set_image_dim_ordering('tf')
+	clf = MultinomialNB()
+	clf.fit(X_train,y_train)
+	clf.score(X_test,y_test)
+	#Alternative Usage of Saved Model
+	# joblib.dump(clf, 'NB_spam_model.pkl')
+	# NB_spam_model = open('NB_spam_model.pkl','rb')
+	# clf = joblib.load(NB_spam_model)
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-
-def get_image_size():
-	img = cv2.imread('gestures/1/100.jpg', 0)
-	return img.shape
-
-def get_num_of_classes():
-	return len(glob('gestures/*'))
-
-image_x, image_y = get_image_size()
-
-def cnn_model():
-	num_of_classes = get_num_of_classes()
-	model = Sequential()
-	model.add(Conv2D(16, (2,2), input_shape=(image_x, image_y, 1), activation='relu'))
-	model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2), padding='same'))
-	model.add(Conv2D(32, (3,3), activation='relu'))
-	model.add(MaxPooling2D(pool_size=(3, 3), strides=(3, 3), padding='same'))
-	model.add(Conv2D(64, (5,5), activation='relu'))
-	model.add(MaxPooling2D(pool_size=(5, 5), strides=(5, 5), padding='same'))
-	model.add(Flatten())
-	model.add(Dense(128, activation='relu'))
-	model.add(Dropout(0.2))
-	model.add(Dense(num_of_classes, activation='softmax'))
-	sgd = optimizers.SGD(lr=1e-2)
-	model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
-	filepath="cnn_model_keras2.h5"
-	checkpoint1 = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
-	callbacks_list = [checkpoint1]
-	#from keras.utils import plot_model
-	#plot_model(model, to_file='model.png', show_shapes=True)
-	return model, callbacks_list
-
-def train():
-	with open("train_images", "rb") as f:
-		train_images = np.array(pickle.load(f))
-	with open("train_labels", "rb") as f:
-		train_labels = np.array(pickle.load(f), dtype=np.int32)
-
-	with open("val_images", "rb") as f:
-		val_images = np.array(pickle.load(f))
-	with open("val_labels", "rb") as f:
-		val_labels = np.array(pickle.load(f), dtype=np.int32)
-
-	train_images = np.reshape(train_images, (train_images.shape[0], image_x, image_y, 1))
-	val_images = np.reshape(val_images, (val_images.shape[0], image_x, image_y, 1))
-	train_labels = np_utils.to_categorical(train_labels)
-	val_labels = np_utils.to_categorical(val_labels)
-
-	print(val_labels.shape)
-
-	model, callbacks_list = cnn_model()
-	model.summary()
-	model.fit(train_images, train_labels, validation_data=(val_images, val_labels), epochs=15, batch_size=500, callbacks=callbacks_list)
-	scores = model.evaluate(val_images, val_labels, verbose=0)
-	print("CNN Error: %.2f%%" % (100-scores[1]*100))
-	#model.save('cnn_model_keras2.h5')
-
-train()
-K.clear_session();
-
+	if request.method == 'POST':
+		message = request.form['message']
+		data = [message]
+		vect = cv.transform(data).toarray()
+		my_prediction = clf.predict(vect)
+	return render_template('result.html',prediction = my_prediction)
 ````
 
 ## Features
-Our model was able to predict the 44 characters in the ASL with a prediction accuracy >95%.
+* The model classifier classifies the input message in spam or non-spam with an accuracy of 93% 
 
-Features that can be added:
-* Deploy the project on cloud and create an API for using it.
-* Increase the vocabulary of our model
-* Incorporate feedback mechanism to make the model more robust
-* Add more sign languages
+The end product looks like this: 
+![Example screenshot](./capture1.png)
+![Example screenshot](./capture2.png)
+
 
 ## Status
-Project is: _finished_. Our team was the winner of the UNT Hackaton 2019. You can find the our final submission post on [devpost](http://bit.ly/2WWllwg). 
+Project is:  _finished_
 
 ## Contact
-Created by me with my teammates [Siddharth Oza](https://github.com/siddharthoza), [Ashish Sharma](https://github.com/ashish1993utd), and [Manish Shukla](https://github.com/Manishms18).
+
+Created by me and my teammate [Harsh Gupta](https://github.com/harshbg).
 
 If you loved what you read here and feel like we can collaborate to produce some exciting stuff, or if you
-just want to shoot a question, please feel free to connect with me on <a href="hello@gupta-harsh.com" target="_blank">email</a>, 
-<a href="http://bit.ly/2uOIUeo" target="_blank">LinkedIn</a>, or 
-<a href="http://bit.ly/2CZv1i5" target="_blank">Twitter</a>. 
-My other projects can be found [here](http://bit.ly/2UlyFgC).
+just want to shoot a question, please feel free to connect with me on <a href="siddharth.oza@outlook.com" target="_blank">email</a>, 
+<a href="https://www.linkedin.com/in/siddharthoza" target="_blank">LinkedIn</a>
 
-
-
-
-
-<!-- MARKDOWN LINKS & IMAGES -->
-[build-shield]: https://img.shields.io/badge/build-passing-brightgreen.svg?style=flat-square
-[contributors-shield]: https://img.shields.io/badge/contributors-1-orange.svg?style=flat-square
-[license-shield]: https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square
-[license-url]: https://choosealicense.com/licenses/mit
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
-[linkedin-url]:  http://www.linkedin.com/in/siddharthoza
-[product-screenshot]: https://raw.githubusercontent.com/othneildrew/Best-README-Template/master/screenshot.png
+My other projects can be found [here](https://siddharthoza.com).
